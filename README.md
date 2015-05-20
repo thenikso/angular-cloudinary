@@ -6,6 +6,12 @@ and [Cloudinary Angular](https://github.com/cloudinary/cloudinary_angular) but
 
 ## Usage
 
+This package is available via [Bower](http://bower.io):
+
+```
+$ bower install --save angular-cloudinary
+```
+
 Include the following in your HTML:
 
 ```html
