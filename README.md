@@ -73,3 +73,7 @@ A full list of available attributes documentation might be available in the futu
   fetch-format="auto"
   alt="">
 ```
+
+## License
+
+Released under the MIT license.
