@@ -6,7 +6,7 @@ var AKAMAI_SHARED_CDN = "res.cloudinary.com";
 var SHARED_CDN = AKAMAI_SHARED_CDN;
 
 var angularModule = angular.module('angular-cloudinary', [
-	'angularFileUpload',
+	'ngFileUpload',
 ]);
 
 var cloudinaryAttr = function(attr){
@@ -144,7 +144,7 @@ angularModule.provider('cloudinary', function () {
 		angular.extend(config, obj);
 	};
 
-	this.$get = ['$upload', function ($upload) {
+	this.$get = ['Upload', function (Upload) {
 		return {
 			url: cloudinary_url,
 			upload: upload,
@@ -156,9 +156,9 @@ angularModule.provider('cloudinary', function () {
 					upload_preset: config.upload_preset
 				}, options);
 			}
-			return $upload.upload({
+			return Upload.upload({
 				url: config.upload_endpoint + config.cloud_name + '/upload',
-				data: options,
+				fields: options,
 				file: file
 			});
 		}

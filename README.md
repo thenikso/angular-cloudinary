@@ -15,8 +15,8 @@ $ bower install --save angular-cloudinary
 Include the following in your HTML:
 
 ```html
-<script src="/bower_components/ng-file-upload/angular-file-upload-shim.js"></script>
-<script src="/bower_components/ng-file-upload/angular-file-upload.js"></script>
+<script src="/bower_components/ng-file-upload/ng-file-upload-shim.js"></script>
+<script src="/bower_components/ng-file-upload/ng-file-upload.js"></script>
 <script src="/bower_components/angular-cloudinary/angular-cloudinary.js"></script>
 ```
 
