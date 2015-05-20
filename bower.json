@@ -1,0 +1,25 @@
+{
+  "name": "angular-cloudinary",
+  "main": "angular-cloudinary.js",
+  "version": "1.0.0",
+  "authors": [
+    "Nicola Peduzzi <thenikso@gmail.com>"
+  ],
+  "description": "AngularJS only module to handle Cloudinary image upload and display",
+  "keywords": [
+    "cloudinary",
+    "angularjs"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.3.15",
+    "ng-file-upload": "~4.2.1"
+  }
+}
