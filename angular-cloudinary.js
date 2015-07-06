@@ -151,13 +151,14 @@ angularModule.provider('cloudinary', function () {
 		};
 
 		function upload (file, options) {
+			var cloud_name = options.cloud_name || config.cloud_name
 			if (config.upload_preset) {
 				options = angular.extend({
 					upload_preset: config.upload_preset
 				}, options);
 			}
 			return Upload.upload({
-				url: config.upload_endpoint + config.cloud_name + '/upload',
+				url: config.upload_endpoint + cloud_name + '/upload',
 				fields: options,
 				file: file
 			});
