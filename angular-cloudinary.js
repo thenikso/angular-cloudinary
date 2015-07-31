@@ -371,7 +371,7 @@ angularModule.provider('cloudinary', function () {
 			dpr = dpr.toString();
 			if (dpr === "auto") {
 				if (window.devicePixelRatio) {
-					return window.devicePixelRatio.toFixed(1);
+					return Math.round(window.devicePixelRatio).toFixed(1);
 				}
 				else if (isRetina()) {
 					return '2.0';

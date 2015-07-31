@@ -1,7 +1,7 @@
 {
   "name": "angular-cloudinary",
   "main": "angular-cloudinary.js",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "authors": [
     "Nicola Peduzzi <thenikso@gmail.com>"
   ],
