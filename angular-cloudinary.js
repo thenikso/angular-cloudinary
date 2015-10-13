@@ -1,6 +1,5 @@
 (function () {
 'use strict';
-var CF_SHARED_CDN = "d3jpl91pxevbkh.cloudfront.net";
 var OLD_AKAMAI_SHARED_CDN = "cloudinary-a.akamaihd.net";
 var AKAMAI_SHARED_CDN = "res.cloudinary.com";
 var SHARED_CDN = AKAMAI_SHARED_CDN;
@@ -129,6 +128,42 @@ angularModule.directive('clImage', ['cloudinary', function(cloudinary) {
 	};
 }]);
 
+angularModule.directive('clVideo', ['cloudinary', function(cloudinary) {
+	return {
+		restrict: 'E',
+		scope: {},
+		priority: 99,
+		replace: true,
+		transclude: true,
+		template: '<div ngTransclude></div>',
+		link: function (scope, element, attrs) {
+			var attributes = {};
+			var publicId = null;
+
+			angular.forEach(attrs, function(value, name) {
+				var key = cloudinaryAttr(name);
+				if (key[0] === '$') return;
+				attributes[key] = value;
+			});
+
+			if (scope.transformations) {
+				attributes.transformation = scope.transformations;
+			}
+
+			attrs.$observe('publicId', function(value){
+				if (!value) return;
+				publicId = value;
+				loadVideo();
+			});
+
+			function loadVideo () {
+				var videoElement = cloudinary.video(publicId, attributes);
+				element.empty().append(videoElement);
+			}
+		}
+	}
+}]);
+
 angularModule.filter('clUrl', ['cloudinary', function(cloudinary) {
 	return function (input, options) {
 		return cloudinary.url(input, options || {});
@@ -148,6 +183,7 @@ angularModule.provider('cloudinary', function () {
 		return {
 			url: cloudinary_url,
 			upload: upload,
+			video: createVideoElement,
 		};
 
 		function upload (file, options) {
@@ -225,6 +261,59 @@ angularModule.provider('cloudinary', function () {
 		var url = [prefix, resource_type_and_type, transformation, version ? "v" + version : "",
 							 public_id].join("/").replace(/([^:])\/+/g, '$1/');
 		return url;
+	}
+
+	function createVideoElement (public_id, options) {
+		options = options || {};
+		public_id = public_id.replace(/\.(mp4|ogv|webm)$/, '');
+		var source_types = option_consume(options, 'source_types', []);
+		var source_transformation = option_consume(options, 'source_transformation', {});
+		var fallback = option_consume(options, 'fallback_content', '');
+
+		if (source_types.length == 0) source_types = DEFAULT_VIDEO_SOURCE_TYPES;
+		var video_options = angular.copy(options);
+
+		if (video_options.hasOwnProperty('poster')) {
+			if (angular.isObject(video_options.poster)) {
+				if (video_options.poster.hasOwnProperty('public_id')) {
+					video_options.poster = cloudinary_url(video_options.poster.public_id, video_options.poster);
+				} else {
+					video_options.poster = cloudinary_url(public_id, angular.extend({}, DEFAULT_POSTER_OPTIONS, video_options.poster));
+				}
+			}
+		} else {
+			video_options.poster = cloudinary_url(public_id, angular.extend({}, DEFAULT_POSTER_OPTIONS, options));
+		}
+
+		if (!video_options.poster) delete video_options.poster;
+
+		var html = '<video ';
+
+		if (!video_options.hasOwnProperty('resource_type')) video_options.resource_type = 'video';
+		var multi_source = angular.isArray(source_types) && source_types.length > 1;
+		var source = public_id;
+		if (!multi_source){
+			source = source + '.' + build_array(source_types)[0];
+		}
+		var src = cloudinary_url(source, video_options);
+		if (!multi_source) video_options.src = src;
+		if (video_options.hasOwnProperty("html_width")) video_options.width = option_consume(video_options, 'html_width');
+		if (video_options.hasOwnProperty("html_height")) video_options.height = option_consume(video_options, 'html_height');
+		html = html + html_attrs(video_options) + '>';
+		if (multi_source) {
+			for(var i = 0; i < source_types.length; i++) {
+				var source_type = source_types[i];
+				var transformation = source_transformation[source_type] || {};
+				src = cloudinary_url(source + "." + source_type, angular.extend({resource_type: 'video'}, options, transformation));
+				var video_type = source_type == 'ogv' ? 'ogg' : source_type;
+				var mime_type = "video/" + video_type;
+				html = html + '<source '+ html_attrs({src: src, type: mime_type}) + '>';
+			}
+		}
+
+		html = html + fallback;
+		html = html + '</video>';
+		return html;
 	}
 
 	function option_consume(options, option_name, default_value) {
@@ -327,6 +416,25 @@ angularModule.provider('cloudinary', function () {
 		}
 	}
 
+	function html_attrs(attrs) {
+		var pairs = [];
+		angular.forEach(attrs, function(value, key) {
+			pairs.push(join_pair(key, value));
+		});
+		pairs.sort();
+		return pairs.filter(function(pair){return pair;}).join(" ");
+	}
+
+	function join_pair(key, value) {
+		if (!value) {
+			return undefined;
+		} else if (value === true) {
+			return key;
+		} else {
+			return key + "=\"" + value + "\"";
+		}
+	}
+
 	var TRANSFORMATION_PARAM_NAME_MAPPING = {
 		width: 'w',
 		height: 'h',
@@ -390,6 +498,10 @@ angularModule.provider('cloudinary', function () {
 		flags: function(flags) { return build_array(flags); },
 		transformation: function(transformation) { return build_array(transformation).join(".")}
 	};
+
+	var DEFAULT_POSTER_OPTIONS = { format: 'jpg', resource_type: 'video' };
+
+	var DEFAULT_VIDEO_SOURCE_TYPES = ['webm', 'mp4', 'ogv'];
 
 	function isRetina(){
 	  return ((window.matchMedia && (window.matchMedia('only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx), only screen and (min-resolution: 75.6dpcm)').matches || window.matchMedia('only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 2/1), only screen and (min--moz-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2)').matches)) || (window.devicePixelRatio && window.devicePixelRatio > 2)) && /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
