@@ -1,0 +1,25 @@
+{
+  "name": "angular-cloudinary",
+  "version": "1.2.1",
+  "description": "Cloudinary AngularJS directives to show images and videos",
+  "main": "angular-cloudinary.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thenikso/angular-cloudinary.git"
+  },
+  "keywords": [
+    "cloudinary"
+  ],
+  "author": "Nicola Peduzzi <thenikso@gmail.com> (http://nikso.net)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/thenikso/angular-cloudinary/issues"
+  },
+  "homepage": "https://github.com/thenikso/angular-cloudinary#readme",
+  "dependencies": {
+    "ng-file-upload": "^9.0.9"
+  }
+}
