@@ -1,5 +1,10 @@
 (function () {
 'use strict';
+
+if (typeof require !== 'undefined') {
+	require('ng-file-upload');
+}
+
 var OLD_AKAMAI_SHARED_CDN = "cloudinary-a.akamaihd.net";
 var AKAMAI_SHARED_CDN = "res.cloudinary.com";
 var SHARED_CDN = AKAMAI_SHARED_CDN;
@@ -569,5 +574,11 @@ angularModule.provider('cloudinary', function () {
 		return prefix;
 	}
 });
+
+if (typeof module !== 'undefined' && module && module.exports) {
+  module.exports = angularModule;
+}
+
+return angularModule;
 
 })();
