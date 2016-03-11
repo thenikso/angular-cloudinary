@@ -207,6 +207,9 @@ angularModule.provider('cloudinary', function () {
 	}];
 
 	function cloudinary_url(public_id, options) {
+		if (!public_id) {
+			return '';
+		}
 		options = options || {};
 		var type = option_consume(options, 'type', 'upload');
 		if (type == 'fetch') {
