@@ -379,7 +379,7 @@ angularModule.provider('cloudinary', function () {
 			if (typeof(transformation) == 'string') {
 				base_transformations.push("t_" + transformation);
 			} else {
-				base_transformations.push(generate_transformation_string($.extend({}, transformation)));
+				base_transformations.push(generate_transformation_string(angular.extend({}, transformation)));
 			}
 		}
 		return base_transformations;
@@ -476,7 +476,7 @@ angularModule.provider('cloudinary', function () {
 		angle: function(angle){ return build_array(angle).join("."); },
 		background: function(background) { return background.replace(/^#/, 'rgb:');},
 		border: function(border) {
-			if ($.isPlainObject(border)) {
+			if (border != null && Object.prototype.toString.call(border) === "[object Object]") {
 				var border_width = "" + (border.width || 2);
 				var border_color = (border.color || "black").replace(/^#/, 'rgb:');
 				border = border_width + "px_solid_" + border_color;
