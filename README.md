@@ -47,9 +47,9 @@ angular
     // Use the service to upload the file
     cloudinary.upload(myFile, { /* cloudinary options here */ })
     // This returns a promise that can be used for result handling
-    .then(function (resp)) {
+    .then(function (resp) {
       alert('all done!');
-    };
+    });
   });
 });
 ```
