@@ -488,7 +488,7 @@ angularModule.provider('cloudinary', function () {
 		dpr: function(dpr) {
 			dpr = dpr.toString();
 			if (dpr === "auto") {
-				let suggestedDpr;
+				var suggestedDpr;
 				if (window.devicePixelRatio) {
 					suggestedDpr = Math.round(window.devicePixelRatio).toFixed(1);
 				}
