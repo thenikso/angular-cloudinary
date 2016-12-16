@@ -177,7 +177,8 @@ angularModule.filter('clUrl', ['cloudinary', function(cloudinary) {
 
 angularModule.provider('cloudinary', function () {
 	var config = {
-		upload_endpoint: 'https://api.cloudinary.com/v1_1/'
+		upload_endpoint: 'https://api.cloudinary.com/v1_1/',
+		resolveAutoDpr: null,
 	};
 
 	this.config = function (obj) {
@@ -487,15 +488,20 @@ angularModule.provider('cloudinary', function () {
 		dpr: function(dpr) {
 			dpr = dpr.toString();
 			if (dpr === "auto") {
+				let suggestedDpr;
 				if (window.devicePixelRatio) {
-					return Math.round(window.devicePixelRatio).toFixed(1);
+					suggestedDpr = Math.round(window.devicePixelRatio).toFixed(1);
 				}
 				else if (isRetina()) {
-					return '2.0';
+					suggestedDpr = '2.0';
 				}
 				else {
-					return '1.0';
+					suggestedDpr = '1.0';
 				}
+				if (typeof config.resolveAutoDpr !== 'function') {
+					return suggestedDpr;
+				}
+				return config.resolveAutoDpr(suggestedDpr);
 			} else if (dpr.match(/^\d+$/)) {
 				return dpr + ".0";
 			} else {
